@@ -69,12 +69,25 @@
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-let Microbe = class Microbe {
-	constructor() {}
+let bgMicrobe = class bgMicrobe {
+	constructor(container, options = {}) {
+		let defaultOptions = {
+			microbes: 100,
+			food: 50
+		};
+
+		this.container = container;
+		this.options = Object.assign(options, defaultOptions);
+	}
+
+	setCanvasContext() {
+		this.context = this.container.getContext("2d");
+	}
 };
 
 
-/* harmony default export */ __webpack_exports__["default"] = (Microbe);
+window.bgMicrobe = bgMicrobe;
+/* harmony default export */ __webpack_exports__["default"] = (bgMicrobe);
 
 /***/ })
 /******/ ]);
