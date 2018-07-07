@@ -70,6 +70,8 @@
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_Microbe__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lib_Food__ = __webpack_require__(2);
+
 
 
 let bgMicrobe = class bgMicrobe {
@@ -85,6 +87,9 @@ let bgMicrobe = class bgMicrobe {
 			}
 		};
 
+		this.microbes = [];
+		this.food = [];
+
 		this.container = container;
 		this.options = Object.assign(options, defaultOptions);
 
@@ -95,10 +100,18 @@ let bgMicrobe = class bgMicrobe {
 		this.setCanvasContext();
 
 		let microbesNumber = this.options.microbes;
+		let foodNumber = this.options.food;
 
 		for (var i = 0; i < microbesNumber; i++) {
 			this.createMicrobes();
 		}
+
+		for (var i = 0; i < foodNumber; i++) {
+			this.createFood();
+		}
+
+		console.log(this.microbes);
+		console.log(this.food);
 	}
 
 	setCanvasContext() {
@@ -111,7 +124,11 @@ let bgMicrobe = class bgMicrobe {
 	}
 
 	createMicrobes() {
-		new __WEBPACK_IMPORTED_MODULE_0__lib_Microbe__["a" /* default */](this.canvas);
+		this.microbes.push(new __WEBPACK_IMPORTED_MODULE_0__lib_Microbe__["a" /* default */](this.canvas));
+	}
+
+	createFood() {
+		this.food.push(new __WEBPACK_IMPORTED_MODULE_1__lib_Food__["a" /* default */](this.canvas));
 	}
 };
 
@@ -170,6 +187,51 @@ let Microbe = class Microbe {
 
 
 /* harmony default export */ __webpack_exports__["a"] = (Microbe);
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+let Food = class Food {
+	constructor(canvas, props = {}) {
+		this.canvas = canvas;
+
+		const param = {
+			size: 3,
+			minPosX: this.canvas.margins.left,
+			maxPosX: this.canvas.width - (this.canvas.margins.left + this.canvas.margins.right),
+			minPosY: this.canvas.margins.top,
+			maxPosY: this.canvas.height - (this.canvas.margins.top + this.canvas.margins.bottom)
+		};
+
+		let defaultProps = {
+			radius: param.size,
+			posX: Math.floor(Math.random() * (param.maxPosX - param.minPosX + 1)) + param.minPosX,
+			posY: Math.floor(Math.random() * (param.maxPosY - param.minPosY + 1)) + param.minPosY,
+			color: 'rgba(0, 0, 0, 0.7)'
+		};
+
+		this.props = Object.assign(props, defaultProps);
+
+		this.createFoods();
+	}
+
+	createFoods() {
+		let radius = this.props.radius / 2;
+		let posX = this.props.posX;
+		let posY = this.props.posY;
+		let color = this.props.color;
+
+		this.canvas.ctx.beginPath();
+		this.canvas.ctx.fillStyle = color;
+		this.canvas.ctx.arc(posX, posY, radius, 0, Math.PI * 2);
+		this.canvas.ctx.fill();
+	}
+};
+
+
+/* harmony default export */ __webpack_exports__["a"] = (Food);
 
 /***/ })
 /******/ ]);

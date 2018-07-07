@@ -1,4 +1,5 @@
 import Microbe from './lib/Microbe';
+import Food from './lib/Food';
 
 class bgMicrobe {
 	constructor(container, options = {}) {
@@ -13,6 +14,9 @@ class bgMicrobe {
 			}
 		}
 
+		this.microbes = [];
+		this.food = [];
+
 		this.container = container;
 		this.options = Object.assign(options, defaultOptions);
 
@@ -23,10 +27,18 @@ class bgMicrobe {
 		this.setCanvasContext();
 
 		let microbesNumber = this.options.microbes;
+		let foodNumber = this.options.food;
 
 		for (var i = 0; i < microbesNumber; i++) {
 			this.createMicrobes();
 		}
+
+		for (var i = 0; i < foodNumber; i++) {
+			this.createFood();
+		}
+
+		console.log(this.microbes);
+		console.log(this.food);
 	}
 
 	setCanvasContext() {
@@ -39,7 +51,11 @@ class bgMicrobe {
 	}
 
 	createMicrobes() {
-		new Microbe(this.canvas);
+		this.microbes.push(new Microbe(this.canvas));
+	}
+
+	createFood() {
+		this.food.push(new Food(this.canvas));
 	}
 }
 
