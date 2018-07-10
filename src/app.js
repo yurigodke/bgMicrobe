@@ -4,8 +4,8 @@ import Food from './lib/Food';
 class bgMicrobe {
 	constructor(container, options = {}) {
 		const defaultOptions = {
-			microbes: 100,
-			food: 50,
+			microbes: 10,
+			food: 0,
 			margins: {
 				top: 10,
 				bottom: 10,
@@ -37,8 +37,7 @@ class bgMicrobe {
 			this.createFood();
 		}
 
-		console.log(this.microbes);
-		console.log(this.food);
+		this.animate();
 	}
 
 	setCanvasContext() {
@@ -56,6 +55,23 @@ class bgMicrobe {
 
 	createFood() {
 		this.food.push(new Food(this.canvas));
+	}
+
+	clearCanvas() {
+		this.canvas.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	}
+
+	animate() {
+		this.clearCanvas();
+
+		this.microbes.forEach((item) => {
+			item.setNextPosition();
+			item.reload();
+		})
+
+
+
+		setTimeout(this.animate.bind(this), 40);
 	}
 }
 
