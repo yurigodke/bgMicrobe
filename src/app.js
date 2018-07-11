@@ -5,7 +5,7 @@ class bgMicrobe {
 	constructor(container, options = {}) {
 		const defaultOptions = {
 			microbes: 10,
-			food: 0,
+			food: 10,
 			margins: {
 				top: 10,
 				bottom: 10,
@@ -71,6 +71,10 @@ class bgMicrobe {
 				item.setNextPosition();
 			}
 			item.reload();
+		});
+
+		this.food.forEach((item, index) => {
+			item.drawFoods();
 		});
 
 		setTimeout(this.animate.bind(this), 40);

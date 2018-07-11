@@ -78,7 +78,7 @@ let bgMicrobe = class bgMicrobe {
 	constructor(container, options = {}) {
 		const defaultOptions = {
 			microbes: 10,
-			food: 0,
+			food: 10,
 			margins: {
 				top: 10,
 				bottom: 10,
@@ -144,6 +144,10 @@ let bgMicrobe = class bgMicrobe {
 				item.setNextPosition();
 			}
 			item.reload();
+		});
+
+		this.food.forEach((item, index) => {
+			item.drawFoods();
 		});
 
 		setTimeout(this.animate.bind(this), 40);
@@ -368,10 +372,10 @@ let Food = class Food {
 
 		this.props = Object.assign(props, defaultProps);
 
-		this.createFoods();
+		this.drawFoods();
 	}
 
-	createFoods() {
+	drawFoods() {
 		let radius = this.props.radius / 2;
 		let posX = this.props.posX;
 		let posY = this.props.posY;

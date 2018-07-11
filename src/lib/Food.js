@@ -19,10 +19,10 @@ class Food {
 
 		this.props = Object.assign(props, defaultProps);
 
-		this.createFoods();
+		this.drawFoods();
 	}
 
-	createFoods() {
+	drawFoods() {
 		let radius = this.props.radius / 2;
 		let posX = this.props.posX;
 		let posY = this.props.posY;
