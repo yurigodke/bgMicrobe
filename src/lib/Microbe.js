@@ -19,6 +19,8 @@ class Microbe {
 			posX: Math.floor(Math.random() * (param.maxPosX - param.minPosX + 1)) + param.minPosX,
 			posY: Math.floor(Math.random() * (param.maxPosY - param.minPosY + 1)) + param.minPosY,
 			speed: .5,
+			life: 1000,
+			dead: false,
 			colors: [
 				'rgba(0, 0, 0, 0.3)',
 				'rgba(0, 0, 0, 0.4)',
@@ -51,6 +53,7 @@ class Microbe {
 	}
 
 	reload() {
+		this.props.life--;
 		let width = this.props.width / 2
 		let height = this.props.height / 2;
 		let rotation = this.props.rotate * Math.PI/180;
@@ -157,16 +160,29 @@ class Microbe {
 	}
 
 	setNextPosition() {
-		let propDirection = this.getDirectionProps();
+		if (this.props.life > 0){
+			let propDirection = this.getDirectionProps();
 
-		let position = this.getPosition(propDirection);
+			let position = this.getPosition(propDirection);
 
-		this.props.posX += position.x;
-		this.props.posY += position.y;
+			this.props.posX += position.x;
+			this.props.posY += position.y;
 
-		let rotate = this.getRotation();
+			let rotate = this.getRotation();
 
-		this.props.rotate = rotate;
+			this.props.rotate = rotate;
+		} else {
+			let opacity = 0;
+			if (200 + this.props.life >= 0) {
+				opacity = ("000" + (200 + this.props.life)).slice(-3);
+			}
+
+			if (Number(opacity) > 0) {
+				this.props.color = `rgba(0, 0, 0, 0.${opacity})`;
+			} else {
+				this.props.dead = true;
+			}
+		}
 	}
 }
 

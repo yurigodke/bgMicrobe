@@ -64,12 +64,14 @@ class bgMicrobe {
 	animate() {
 		this.clearCanvas();
 
-		this.microbes.forEach((item) => {
-			item.setNextPosition();
+		this.microbes.forEach((item, index) => {
+			if(item.props.dead){
+				this.microbes.splice(index,1);
+			} else {
+				item.setNextPosition();
+			}
 			item.reload();
-		})
-
-
+		});
 
 		setTimeout(this.animate.bind(this), 40);
 	}
