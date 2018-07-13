@@ -1,3 +1,4 @@
+var bgMicrobe =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -221,7 +222,6 @@ let bgMicrobe = class bgMicrobe {
 };
 
 
-window.bgMicrobe = bgMicrobe;
 /* harmony default export */ __webpack_exports__["default"] = (bgMicrobe);
 
 /***/ }),

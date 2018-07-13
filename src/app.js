@@ -147,5 +147,4 @@ class bgMicrobe {
 	}
 }
 
-window.bgMicrobe = bgMicrobe;
 export default bgMicrobe;
