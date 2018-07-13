@@ -37,7 +37,27 @@ class bgMicrobe {
 			this.createFood();
 		}
 
+		this.container.addEventListener('click', this.addClickFood.bind(this));
+
 		this.animate();
+	}
+
+	addClickFood(e) {
+		let clickRadius = 20;
+		let posMinX = e.offsetX - clickRadius;
+		let posMaxX = e.offsetX + clickRadius;
+		let posMinY = e.offsetY - clickRadius;
+		let posMaxY = e.offsetY + clickRadius;
+
+		for (var i = 0; i < 10; i++) {
+			let posX = Math.floor(Math.random() * (posMaxX - posMinX + 1)) + posMinX;
+			let posY = Math.floor(Math.random() * (posMaxY - posMinY + 1)) + posMinY;
+
+			this.food.push(new Food(this.canvas, {
+				posX,
+				posY
+			}));
+		}
 	}
 
 	setCanvasContext() {
@@ -115,6 +135,13 @@ class bgMicrobe {
 		this.food.forEach((item, index) => {
 			item.drawFoods();
 		});
+
+		if (this.food.length < (this.options.food * .8) ) {
+			let testRandom = Math.round(Math.random());
+			if (testRandom) {
+				this.createFood()
+			}
+		}
 
 		setTimeout(this.animate.bind(this), 40);
 	}

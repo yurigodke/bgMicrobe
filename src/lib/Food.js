@@ -14,7 +14,7 @@ class Food {
 			radius: param.size,
 			posX: Math.floor(Math.random() * (param.maxPosX - param.minPosX + 1)) + param.minPosX,
 			posY: Math.floor(Math.random() * (param.maxPosY - param.minPosY + 1)) + param.minPosY,
-			color: 'rgba(0, 0, 0, 0.7)'
+			color: 'rgba(0, 0, 0, 0.4)'
 		}
 
 		this.props = Object.assign(defaultProps, props);
