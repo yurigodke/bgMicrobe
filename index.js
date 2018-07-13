@@ -77,8 +77,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 let bgMicrobe = class bgMicrobe {
 	constructor(container, options = {}) {
 		const defaultOptions = {
-			microbes: 10,
-			food: 10,
+			microbes: 100,
+			food: 50,
 			margins: {
 				top: 10,
 				bottom: 10,
@@ -134,6 +134,39 @@ let bgMicrobe = class bgMicrobe {
 		this.canvas.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	}
 
+	checkProximityFood(microbeIndex) {
+		let microbePosX = this.microbes[microbeIndex].props.posX;
+		let microbePosY = this.microbes[microbeIndex].props.posY;
+
+		this.food.forEach((food, index) => {
+			let foodDistanceX = food.props.posX - microbePosX;
+			let foodDistanceY = food.props.posY - microbePosY;
+
+			let contactX = foodDistanceX > -1 && foodDistanceX < 1;
+			let contactY = foodDistanceY > -1 && foodDistanceY < 1;
+
+			let areaX = foodDistanceX > -50 && foodDistanceX < 50;
+			let areaY = foodDistanceY > -50 && foodDistanceY < 50;
+
+			if (contactX && contactY) {
+				this.microbes[microbeIndex].eat();
+				this.food.splice(index, 1);
+			} else if (areaX && areaY) {
+				let tanFood = foodDistanceY / foodDistanceX;
+				let angleRad = Math.atan(tanFood);
+				let angleDeg = angleRad * 180 / Math.PI;
+
+				if (foodDistanceX < 0) {
+					angleDeg += 180;
+				} else if (foodDistanceY < 0 && foodDistanceX >= 0) {
+					angleDeg += 360;
+				}
+
+				this.microbes[microbeIndex].props.foodAng = angleDeg;
+			}
+		});
+	}
+
 	animate() {
 		this.clearCanvas();
 
@@ -141,6 +174,12 @@ let bgMicrobe = class bgMicrobe {
 			if (item.props.dead) {
 				this.microbes.splice(index, 1);
 			} else {
+				this.checkProximityFood(index);
+				if (item.checkClone()) {
+					let propsClone = Object.assign({}, item.props);
+					propsClone.rotate = (propsClone.rotate + 45) % 360;
+					this.microbes.push(new __WEBPACK_IMPORTED_MODULE_0__lib_Microbe__["a" /* default */](this.canvas, propsClone));
+				}
 				item.setNextPosition();
 			}
 			item.reload();
@@ -167,7 +206,7 @@ let Microbe = class Microbe {
 	constructor(canvas, props = {}) {
 		this.canvas = canvas;
 
-		const param = {
+		this.param = {
 			minSize: 6,
 			maxSize: 9,
 			minRotate: 0,
@@ -175,24 +214,32 @@ let Microbe = class Microbe {
 			minPosX: this.canvas.margins.left,
 			maxPosX: this.canvas.width - (this.canvas.margins.left + this.canvas.margins.right),
 			minPosY: this.canvas.margins.top,
-			maxPosY: this.canvas.height - (this.canvas.margins.top + this.canvas.margins.bottom)
+			maxPosY: this.canvas.height - (this.canvas.margins.top + this.canvas.margins.bottom),
+			lifeTime: 1000
 		};
 
 		let defaultProps = {
-			width: Math.floor(Math.random() * (param.maxSize - param.minSize + 1)) + param.minSize,
-			rotate: Math.floor(Math.random() * (param.maxRotate - param.minRotate + 1)) + param.minRotate,
-			posX: Math.floor(Math.random() * (param.maxPosX - param.minPosX + 1)) + param.minPosX,
-			posY: Math.floor(Math.random() * (param.maxPosY - param.minPosY + 1)) + param.minPosY,
+			width: Math.floor(Math.random() * (this.param.maxSize - this.param.minSize + 1)) + this.param.minSize,
+			rotate: Math.floor(Math.random() * (this.param.maxRotate - this.param.minRotate + 1)) + this.param.minRotate,
+			posX: Math.floor(Math.random() * (this.param.maxPosX - this.param.minPosX + 1)) + this.param.minPosX,
+			posY: Math.floor(Math.random() * (this.param.maxPosY - this.param.minPosY + 1)) + this.param.minPosY,
 			speed: .5,
-			life: 1000,
+			life: this.param.lifeTime,
 			dead: false,
 			colors: ['rgba(0, 0, 0, 0.3)', 'rgba(0, 0, 0, 0.4)', 'rgba(0, 0, 0, 0.5)', 'rgba(0, 0, 0, 0.6)', 'rgba(0, 0, 0, 0.7)']
 		};
 		defaultProps.height = defaultProps.width / 2;
 
-		this.props = Object.assign(props, defaultProps);
+		this.props = Object.assign(defaultProps, props);
 
 		this.draw();
+	}
+
+	eat() {
+		this.props.width++;
+		this.props.height = this.props.width / 2;
+		this.props.life = this.param.lifeTime;
+		this.props.foodAng = null;
 	}
 
 	draw() {
@@ -203,12 +250,28 @@ let Microbe = class Microbe {
 		let posY = this.props.posY;
 		let color = this.props.colors[Math.floor(Math.random() * this.props.colors.length)];
 
-		this.props.color = color;
+		if (!this.props.color) {
+			this.props.color = color;
+		}
 
 		this.canvas.ctx.beginPath();
-		this.canvas.ctx.strokeStyle = color;
+		this.canvas.ctx.strokeStyle = this.props.color;
 		this.canvas.ctx.ellipse(posX, posY, width, height, rotation, 0, Math.PI * 2);
 		this.canvas.ctx.stroke();
+	}
+
+	checkClone() {
+		let clone = false;
+
+		if (this.props.width > this.param.maxSize) {
+			clone = true;
+
+			this.props.width = this.param.minSize;
+			this.props.height = this.props.width / 2;
+			this.props.life = this.param.lifeTime;
+		}
+
+		return clone;
 	}
 
 	reload() {
@@ -279,7 +342,9 @@ let Microbe = class Microbe {
 	}
 
 	getRotation() {
-		let rotateVariation = Math.floor(Math.random() * (2 - -2 + 1) + -2);
+		let foodRotate;
+		let rotateSpeed = 2;
+		let rotateVariation = Math.floor(Math.random() * (rotateSpeed - -rotateSpeed + 1) + -rotateSpeed);
 
 		let minPosX = this.canvas.margins.left;
 		let maxPosX = this.canvas.width - (this.canvas.margins.left + this.canvas.margins.right);
@@ -310,9 +375,22 @@ let Microbe = class Microbe {
 			} else {
 				rotateVariation = -2;
 			}
+		} else if (this.props.foodAng) {
+			let rotateAdapt = this.props.foodAng - this.props.rotate;
+			let rotateAtack = Math.floor(Math.random() * (rotateSpeed * 2));
+			if (rotateAdapt > 180 || rotateAdapt < -180) {
+				rotateAdapt = rotateAdapt * -1;
+			}
+			if (rotateAdapt < -1) {
+				foodRotate = (this.props.rotate - rotateAtack) % 360;
+			} else if (rotateAdapt > 1) {
+				foodRotate = (this.props.rotate + rotateAtack) % 360;
+			} else {
+				foodRotate = this.props.foodAng;
+			}
 		}
-		let newRotate = (this.props.rotate + rotateVariation) % 360;
 
+		let newRotate = foodRotate || (this.props.rotate + rotateVariation) % 360;
 		return newRotate < 0 ? 360 : newRotate;
 	}
 
@@ -370,7 +448,7 @@ let Food = class Food {
 			color: 'rgba(0, 0, 0, 0.7)'
 		};
 
-		this.props = Object.assign(props, defaultProps);
+		this.props = Object.assign(defaultProps, props);
 
 		this.drawFoods();
 	}

@@ -17,7 +17,7 @@ class Food {
 			color: 'rgba(0, 0, 0, 0.7)'
 		}
 
-		this.props = Object.assign(props, defaultProps);
+		this.props = Object.assign(defaultProps, props);
 
 		this.drawFoods();
 	}
