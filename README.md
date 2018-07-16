@@ -15,12 +15,12 @@ In your HTML you need create a container canvas tag
 
 Install this project
 ```
-npm install --save bgMicrobe
+npm install --save bgmicrobe
 ```
 
 Import in your project
 ```javascript
-import bgMicrobe from 'bgMicrobe'
+import bgMicrobe from 'bgmicrobe'
 ```
 
 ### Installing with index.js
