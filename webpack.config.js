@@ -14,6 +14,7 @@ module.exports = {
 		filename: 'index.js',
 		path: path.resolve(__dirname, ''),
 		publicPath: '',
+		libraryTarget: 'umd',
 		library: 'bgMicrobe'
 	},
 	module: {
