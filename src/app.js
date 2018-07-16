@@ -18,7 +18,7 @@ class bgMicrobe {
 		this.food = [];
 
 		this.container = container;
-		this.options = Object.assign(options, defaultOptions);
+		this.options = Object.assign(defaultOptions, options);
 
 		this.initialize();
 	}
@@ -38,6 +38,7 @@ class bgMicrobe {
 		}
 
 		this.container.addEventListener('click', this.addClickFood.bind(this));
+		window.addEventListener("resize", this.setCanvasContext.bind(this));
 
 		this.animate();
 	}
@@ -61,6 +62,8 @@ class bgMicrobe {
 	}
 
 	setCanvasContext() {
+		this.container.width = this.container.clientWidth;
+		this.container.height = this.container.clientHeight;
 		this.canvas = {
 			ctx: this.container.getContext("2d"),
 			width: this.container.clientWidth,
